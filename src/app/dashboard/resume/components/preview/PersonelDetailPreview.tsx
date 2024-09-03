@@ -9,11 +9,10 @@ export default function PersonelDetailPreview({ resumeInfo }) {
                  style={{ color: resumeInfo?.themeColor }}
                 
             >
-                {resumeInfo?.firstName} 
-                {resumeInfo?.lastName}
+                {resumeInfo?.firstName}  {resumeInfo?.lastName}
             </h2>
             <h2 className="text-center text-sm font-medium">
-                {resumeInfo?.title}
+                {resumeInfo?.jobTitle}
             </h2>
             <h2
                 className="text-center text-xs font-normal"

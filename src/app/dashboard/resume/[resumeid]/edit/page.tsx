@@ -22,13 +22,7 @@ export default function EditResume({
     useEffect(() => {
         console.log("setting dummy");
 
-
-        
-
-          
             setResumeInfo(dummy)
-        
-       
     }, []);
 
     return (

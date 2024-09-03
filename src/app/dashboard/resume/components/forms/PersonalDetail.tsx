@@ -29,28 +29,26 @@ export default function PersonalDetail({ enabledNext }: PersonalDetailProps) {
     const params = useParams();
 
     const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
-    //  console.log(resumeInfo?.items[0].fields);
+    
     const [formData, setFormData] = useState<FormData>({});
     const [loading, setLoading] = useState(false);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        console.log("handler");
+       
         enabledNext(false);
         const { name, value } = e.target;
-        console.log(name);
-        console.log(value);
+       
 
         setFormData({
             ...formData,
             [name]: value,
         });
-        console.log(resumeInfo);
+       
         setResumeInfo({
             ...resumeInfo,
             [name]: value,
         });
-        console.log("111111");
-        console.log(resumeInfo);
+       
     };
 
     useEffect(() => {
