@@ -9,8 +9,7 @@ import SummeryPreview from "./preview/SummeryPreview";
 type Props = {};
 
 function ResumePreview({}: Props) {
-    const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
-   // console.log(resumeInfo);
+    const { resumeInfo } = useContext(ResumeInfoContext);
 
     return (
         <div
@@ -18,22 +17,25 @@ function ResumePreview({}: Props) {
             style={{
                 borderColor: resumeInfo?.themeColor,
             }}
-
-           
         >
             {/* Personal Details */}
+
             <PersonelDetailPreview resumeInfo={resumeInfo} />
 
-            <SummeryPreview resumeInfo={resumeInfo} />
+            {/* <SummeryPreview resumeInfo={resumeInfo} /> */}
+            <SummeryPreview />
 
             {/* professional experience */}
-            <ExperiencePreview resumeInfo={resumeInfo} />
+            {/* <ExperiencePreview resumeInfo={resumeInfo} /> */}
+            <ExperiencePreview />
 
             {/* education */}
-            <EducationPreview resumeInfo={resumeInfo} />
+            {/* <EducationPreview resumeInfo={resumeInfo} /> */}
+            <EducationPreview />
 
             {/* skills */}
-            <SkillsPreview resumeInfo={resumeInfo} />
+            {/* <SkillsPreview resumeInfo={resumeInfo} /> */}
+            <SkillsPreview />
         </div>
     );
 }

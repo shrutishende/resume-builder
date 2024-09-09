@@ -169,7 +169,7 @@ export default function Experience({ enabledNext }: ExperienceProps) {
                                         onRichTextEditorChange={(event) =>
                                             handleRichTextEditor(
                                                 event,
-                                                "workSummery",
+                                                "workSummary",
                                                 index
                                             )
                                         }

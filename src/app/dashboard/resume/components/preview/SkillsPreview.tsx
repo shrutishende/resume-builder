@@ -1,8 +1,10 @@
-import React from "react";
+import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
+import React, { useContext } from "react";
 
 type Props = {};
 
-export default function SkillsPreview({ resumeInfo }) {
+export default function SkillsPreview() {
+    const { resumeInfo } = useContext(ResumeInfoContext);
     return (
         <div className="my-6">
             <h2
@@ -14,7 +16,10 @@ export default function SkillsPreview({ resumeInfo }) {
             <hr style={{ borderColor: resumeInfo?.themeColor }} />
             <div className="grid grid-cols-2 gap-3 my-4">
                 {resumeInfo?.skills.map((skill, index) => (
-                    <div key={index} className="flex items-center justify-between">
+                    <div
+                        key={index}
+                        className="flex items-center justify-between"
+                    >
                         <h2 className="text-xs ">{skill.name}</h2>
                         <div className="h-2 bg-gray-200 w-[120px]">
                             <div
@@ -29,6 +34,5 @@ export default function SkillsPreview({ resumeInfo }) {
                 ))}
             </div>
         </div>
-       
     );
 }

@@ -26,70 +26,38 @@ export const client = contentfulManagement.createClient({
 });
 
 export default function PersonalDetail({ enabledNext }: PersonalDetailProps) {
-    const params = useParams();
+    const { resumeInfo, setResumeInfo, resumeEntry, setResumeEntry } =
+        useContext(ResumeInfoContext);
 
-    const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
-    
     const [formData, setFormData] = useState<FormData>({});
     const [loading, setLoading] = useState(false);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-       
         enabledNext(false);
         const { name, value } = e.target;
-       
 
         setFormData({
             ...formData,
             [name]: value,
         });
-       
+
         setResumeInfo({
             ...resumeInfo,
             [name]: value,
         });
-       
     };
 
     useEffect(() => {
-        console.log("here 1");
+        setFormData({
+            firstName: resumeInfo?.firstName,
+            lastName: resumeInfo?.lastName,
+            jobTitle: resumeInfo?.jobTitle,
+            address: resumeInfo?.address,
+            phone: resumeInfo?.phone,
+            email: resumeInfo?.email,
+        });
+    }, [resumeInfo]);
 
-        const getData = async () => {
-            // const data = {
-            //     data: formData,
-            // };
-
-            const space = await client.getSpace(
-                process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID
-            );
-
-            const environment = await space.getEnvironment("master");
-
-            const entry = await environment.getEntries({
-                content_type: "resume",
-                "sys.id": params.resumeid,
-            });
-
-            //  console.log("entry", entry);
-
-            const personalDetail = entry.items[0].fields;
-            //    console.log("personal details ", personalDetail);
-
-            if (personalDetail) {
-                setFormData({
-                    firstName: personalDetail.firstName["en-US"],
-                    lastName: personalDetail.lastName["en-US"],
-                    jobTitle: personalDetail.title["en-US"],
-                    address: personalDetail.address["en-US"],
-                    phone: personalDetail.phone["en-US"],
-                    email: personalDetail.email["en-US"],
-                });
-            }
-        };
-        getData();
-    }, []);
-
-    //console.log("form data", formData);
     const onSave = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -99,41 +67,41 @@ export default function PersonalDetail({ enabledNext }: PersonalDetailProps) {
             data: formData,
         };
 
-        const space = await client.getSpace(
-            process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID
-        );
-
-        const environment = await space.getEnvironment("master");
-
-        const entry = await environment.getEntry(params.resumeid);
-
-        //  console.log("personel on save", entry);
-
-        entry.fields.email["en-US"] = data.data.email;
-
-        entry.fields.firstName = {
+        resumeEntry.fields.firstName = {
             "en-US": data.data.firstName,
         };
-        entry.fields.lastName = {
+        resumeEntry.fields.lastName = {
             "en-US": data.data.lastName,
         };
-        entry.fields.address = {
+
+        resumeEntry.fields.address = {
             "en-US": data.data.address,
         };
-        entry.fields.phone = {
+
+        resumeEntry.fields.email = {
+            "en-US": data.data.email,
+        };
+
+        resumeEntry.fields.title = {
+            "en-US": data.data.jobTitle,
+        };
+
+        resumeEntry.fields.phone = {
             "en-US": data.data.phone,
         };
 
-        entry.fields.title["en-US"] = data.data.jobTitle;
+        const update = await resumeEntry.update();
 
-        const updatedEntry = await entry.update();
+        const publish = await update.publish();
 
-        await updatedEntry.publish();
+        setResumeEntry(publish);
 
         enabledNext(true);
         setLoading(false);
         toast("Details Updated.");
     };
+
+    
     return (
         <div className="p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-10">
             <h2 className="font-bold text-lg">Personal Detail</h2>

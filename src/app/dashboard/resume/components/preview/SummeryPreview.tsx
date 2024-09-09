@@ -1,10 +1,13 @@
-import React from "react";
+import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
+import React, { useContext } from "react";
 
 
-export default function SummeryPreview({ resumeInfo }) {
+export default function SummeryPreview() {
+    const { resumeInfo } = useContext(ResumeInfoContext);
     return (
         <>
-            <p className="text-xs">{resumeInfo?.summery}</p>
+            <p className="text-xs">{resumeInfo?.summary}</p>
         </>
+        
     );
 }

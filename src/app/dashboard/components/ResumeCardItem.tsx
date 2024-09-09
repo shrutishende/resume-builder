@@ -4,7 +4,7 @@ import React from "react";
 
 export default function ResumeCardItem(resume: any) {
     const resumeId = resume.resume.sys.id;
-    console.log(resume);
+    console.log(resume)
     return (
         <Link href={`/dashboard/resume/${resumeId}/edit`}>
             <div>

@@ -12,11 +12,11 @@ export const client = contentfulManagement.createClient({
 
 export default function Dashboard() {
     const { user } = useUser();
-    console.log(user)
+   
 
     const emailID = user?.primaryEmailAddress?.emailAddress;
     const userID= user?.id
-    console.log(userID);
+   
     const [resumeList, setResumeList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -28,15 +28,15 @@ export default function Dashboard() {
             );
             const environment = await space.getEnvironment("master");
             try {
-                console.log("here 1");
+        //        console.log("here 1");
                 const res = await environment.getEntries({
                     content_type: "resume",
                     "fields.userId": userID,
                     order: "-sys.createdAt",
                 });
-                console.log(res)
+          //      console.log(res)
                 setResumeList(res.items);
-               console.log(res.items)
+          //     console.log(res.items)
             } catch (error) {
                 console.error("Error fetching entries:", error);
             } finally {

@@ -1,8 +1,10 @@
-import React from "react";
+import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
+import React, { useContext } from "react";
 
 type Props = {};
 
-export default function EducationPreview({ resumeInfo }) {
+export default function EducationPreview() {
+    const { resumeInfo } = useContext(ResumeInfoContext);
     return (
         <div className="my-6">
             <h2
@@ -32,6 +34,5 @@ export default function EducationPreview({ resumeInfo }) {
                 </div>
             ))}
         </div>
-       
     );
 }

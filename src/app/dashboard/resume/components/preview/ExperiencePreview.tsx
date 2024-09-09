@@ -1,8 +1,10 @@
-import React from "react";
+import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
+import React, { useContext } from "react";
 
 type Props = {};
 
-export default function ExperiencePreview({ resumeInfo }) {
+export default function ExperiencePreview() {
+    const { resumeInfo } = useContext(ResumeInfoContext);
     return (
         <div className="my-6">
             <h2
@@ -28,14 +30,14 @@ export default function ExperiencePreview({ resumeInfo }) {
                             {exp?.currentlyWorking ? "Present" : exp?.endDate}
                         </span>
                     </h2>
-                    {/* <p className="text-xs my-2 ">{exp?.workSummery}</p> */}
+                    {/* <p className="text-xs my-2 ">{exp?.workSummary}</p> */}
                     <div
                         className="text-xs my-2"
-                        dangerouslySetInnerHTML={{ __html: exp.workSummery }}
+                        dangerouslySetInnerHTML={{ __html: exp.workSummary }}
                     />
                 </div>
             ))}
         </div>
-       
+      
     );
 }
