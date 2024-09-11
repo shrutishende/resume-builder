@@ -38,6 +38,8 @@ export default function EditResume({
                 "sys.id": params.resumeid,
             });
 
+            console.log("entry",entry)
+
             setResumeEntry(entry.items[0]);
 
             const firstName = entry.items[0].fields.firstName["en-US"];
@@ -46,6 +48,7 @@ export default function EditResume({
             const address = entry.items[0].fields.address["en-US"];
             const phone = entry.items[0].fields.phone["en-US"];
             const email = entry.items[0].fields.email["en-US"];
+            const summary = entry.items[0].fields.summery["en-US"]
 
             setResumeInfo({
                 ...dummy,
@@ -55,6 +58,7 @@ export default function EditResume({
                 address: address,
                 phone: phone,
                 email: email,
+                summary:summary
             });
 
 

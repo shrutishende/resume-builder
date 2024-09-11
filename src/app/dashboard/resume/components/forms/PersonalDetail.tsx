@@ -19,11 +19,7 @@ interface PersonalDetailProps {
     enabledNext: (value: boolean) => void;
 }
 
-const contentfulManagement = require("contentful-management");
 
-export const client = contentfulManagement.createClient({
-    accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN,
-});
 
 export default function PersonalDetail({ enabledNext }: PersonalDetailProps) {
     const { resumeInfo, setResumeInfo, resumeEntry, setResumeEntry } =
@@ -46,6 +42,7 @@ export default function PersonalDetail({ enabledNext }: PersonalDetailProps) {
             [name]: value,
         });
     };
+
 
     useEffect(() => {
         setFormData({

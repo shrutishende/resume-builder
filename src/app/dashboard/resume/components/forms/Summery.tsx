@@ -2,7 +2,6 @@ import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { LoaderCircle, SparklesIcon } from "lucide-react";
-import { useParams } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AIChatSession } from "../../../../../../service/AImodal";
@@ -16,40 +15,42 @@ interface SummaryItem {
     experience_level: string;
 }
 
-const contentfulManagement = require("contentful-management");
-
-export const client = contentfulManagement.createClient({
-    accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN,
-});
-
 const prompt =
     "Job title: {jobTitle}, Depends on job title give me summery for my resume within 4-5 lines in JSON format with field experience level and summery with experience level for fresher, mid-level and experinced field in json format. And json format should be {[{'experience_level': 'fresher', 'summary' : 'sumarry value'}]}";
 
 export default function Summery({ enabledNext }: SummaryProps) {
-    const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
+    const { resumeInfo, setResumeInfo, resumeEntry, setResumeEntry } =
+        useContext(ResumeInfoContext);
 
     const [loading, setLoading] = useState(false);
 
-    const [summery, setSummery] = useState("");
-
-    const params = useParams();
+    const [summary, setSummary] = useState("");
 
     const [aiGeneratedSummeryList, setAiGeneratedSummeryList] = useState<
         SummaryItem[] | null
     >(null);
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setSummary(e.target.value);
+        setResumeInfo({
+            ...resumeInfo,
+            summary: e.target.value,
+        });
+    };
     useEffect(() => {
-        summery &&
+        summary &&
             setResumeInfo({
                 ...resumeInfo,
-                summery: summery,
+                summary: summary,
             });
-    }, [summery]);
+
+        setSummary(resumeInfo?.summary);
+    }, []);
 
     const GenerateSummeryFromAI = async () => {
         setLoading(true);
         const PROMPT = prompt.replace("{jobTitle}", resumeInfo?.jobTitle);
-        console.log(PROMPT);
+
         const result = await AIChatSession.sendMessage(PROMPT);
 
         setAiGeneratedSummeryList(JSON.parse(result.response.text()));
@@ -60,25 +61,19 @@ export default function Summery({ enabledNext }: SummaryProps) {
         e.preventDefault();
 
         setLoading(true);
+
         const data = {
-            summery: summery,
+            summary: summary,
         };
 
-        const space = await client.getSpace(
-            process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID
-        );
-
-        const environment = await space.getEnvironment("master");
-
-        const entry = await environment.getEntry(params.resumeid);
-
-        entry.fields.summery = {
-            "en-US": data.summery,
+        resumeEntry.fields.summery = {
+            "en-US": data.summary,
         };
 
-        const updatedEntry = await entry.update();
+        const updatedEntry = await resumeEntry.update();
 
-        await updatedEntry.publish();
+        const publish = await updatedEntry.publish();
+        setResumeEntry(publish);
 
         enabledNext(true);
         setLoading(false);
@@ -106,11 +101,9 @@ export default function Summery({ enabledNext }: SummaryProps) {
                     </div>
                     <Textarea
                         className="mt-5"
-                        value={summery}
+                        value={summary}
                         required
-                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                            setSummery(e.target.value)
-                        }
+                        onChange={handleInputChange}
                     />
 
                     <div className="mt-2 flex justify-end">
@@ -132,7 +125,13 @@ export default function Summery({ enabledNext }: SummaryProps) {
                         <div
                             key={index}
                             className="p-5 shadow-lg my-4 rounded-lg cursor-pointer"
-                            onClick={() => setSummery(item?.summary)}
+                            onClick={() => {
+                                setSummary(item?.summary);
+                                setResumeInfo({
+                                    ...resumeInfo,
+                                    summary: item?.summary,
+                                });
+                            }}
                         >
                             <h2 className="font-bold my-1 text-primary">
                                 Level : {item?.experience_level}
