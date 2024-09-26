@@ -38,9 +38,27 @@ export default function EditResume({
                 "sys.id": params.resumeid,
             });
 
-            console.log("entry",entry)
-
             setResumeEntry(entry.items[0]);
+
+            const raw_skills = entry.items[0].fields.skills["en-US"];
+
+            const skill_id_promise = raw_skills.map(async (id) => {
+                const skill_id = id.sys.id;
+
+                const skill_entry = await environment.getEntries({
+                    content_type: "skills",
+                    "sys.id": skill_id,
+                });
+
+                const skill = {
+                    id: skill_id,
+                    name: skill_entry.items[0].fields.skill["en-US"],
+                    rating: skill_entry.items[0].fields.rating["en-US"],
+                };
+                return skill;
+            });
+
+            const skills = await Promise.all(skill_id_promise);
 
             const firstName = entry.items[0].fields.firstName["en-US"];
             const lastName = entry.items[0].fields.lastName["en-US"];
@@ -48,7 +66,7 @@ export default function EditResume({
             const address = entry.items[0].fields.address["en-US"];
             const phone = entry.items[0].fields.phone["en-US"];
             const email = entry.items[0].fields.email["en-US"];
-            const summary = entry.items[0].fields.summery["en-US"]
+            const summary = entry.items[0].fields.summery["en-US"];
 
             setResumeInfo({
                 ...dummy,
@@ -58,9 +76,9 @@ export default function EditResume({
                 address: address,
                 phone: phone,
                 email: email,
-                summary:summary
+                summary: summary,
+                skills: skills,
             });
-
 
             //     const updatedResumeInfo: ResumeEntry = {
             //         firstName: entry.items[0].fields.firstName["en-US"],
@@ -77,9 +95,11 @@ export default function EditResume({
             //     };
             //     setResumeInfo(updatedResumeInfo);
             // }
-        }
+        };
         getData();
     }, []);
+
+    //  console.log("resume info", resumeInfo);
 
     return (
         <>

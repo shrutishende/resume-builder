@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from "react";
 import RichTextEditor from "../RichTextEditor";
 import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
 import { useParams } from "next/navigation";
+import { LoaderCircle } from "lucide-react";
 
 interface ExperienceProps {
     enabledNext: (value: boolean) => void;
@@ -29,7 +30,7 @@ export default function Experience({ enabledNext }: ExperienceProps) {
     const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
 
     const [experienceList, setExperienceList] = useState([formField]);
-
+ const [loading, setLoading] = useState(false);
     const params = useParams();
 
     const handleChange = (index: any, event: any) => {
@@ -199,7 +200,13 @@ export default function Experience({ enabledNext }: ExperienceProps) {
                         </Button>
                     </div>
 
-                    <Button onClick={onSave}>Save</Button>
+                    <Button disabled={loading} onClick={onSave}>
+                        {loading ? (
+                            <LoaderCircle className="animate-spin" />
+                        ) : (
+                            "Save"
+                        )}
+                    </Button>
                 </div>
             </div>
         </div>
