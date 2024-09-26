@@ -1,10 +1,11 @@
 import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
 import React, { useContext } from "react";
 
-type Props = {};
+
 
 export default function SkillsPreview() {
     const { resumeInfo } = useContext(ResumeInfoContext);
+  //  console.log("resumeInfo previueeeee", resumeInfo);
     return (
         <div className="my-6">
             <h2
@@ -26,7 +27,7 @@ export default function SkillsPreview() {
                                 className="h-2"
                                 style={{
                                     backgroundColor: resumeInfo.themeColor,
-                                    width: skill?.rating + "%",
+                                    width: skill?.rating * 20 + "%",
                                 }}
                             ></div>
                         </div>
