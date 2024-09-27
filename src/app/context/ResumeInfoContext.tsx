@@ -1,6 +1,8 @@
 import { createContext } from "react";
 import dummy from "../data/dummy";
+import { useContext } from "react";
 
+// @todo rename it to ResumeInfo
 export interface ResumeEntry {
     firstName: string;
     lastName: string;
@@ -38,9 +40,40 @@ export interface Education {
 }
 
 export interface Skills {
-    id: number;
+    id?: string;
     name: string;
     rating: number;
+    [key: string]: any;
 }
 
-export const ResumeInfoContext = createContext<ResumeEntry | null>(null);
+export type ResumeInfoContextType = {
+    resumeInfo: ResumeEntry | null;
+    setResumeInfo: (resumeInfo: ResumeEntry) => void;
+    resumeEntry: any | null;
+    setResumeEntry: (resumeEntry: any) => void;
+};
+
+export const ResumeInfoContext = createContext<
+    ResumeInfoContextType | undefined
+>(undefined);
+
+
+// export default function useResumeInfoContext() {
+//     let { resumeInfo, setResumeInfo, resumeEntry, setResumeEntry } = useContext(
+//         ResumeInfoContext
+//     ) as ResumeInfoContextType;
+//     if (!resumeInfo) {
+//         throw Error("setResumeEntry not found");
+//     }
+//     if (!setResumeInfo) {
+//         throw Error("setResumeEntry not found");
+//     }
+//     if (!resumeEntry) {
+//         throw Error("setResumeEntry not found");
+//     }
+//     if (!setResumeEntry) {
+//         throw Error("setResumeEntry not found");
+//     }
+
+//     return { resumeInfo, setResumeInfo, resumeEntry, setResumeEntry };
+// }

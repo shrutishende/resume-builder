@@ -1,4 +1,7 @@
-import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
+import {
+    ResumeInfoContext,
+    ResumeInfoContextType,
+} from "@/app/context/ResumeInfoContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LoaderCircle } from "lucide-react";
@@ -19,11 +22,9 @@ interface PersonalDetailProps {
     enabledNext: (value: boolean) => void;
 }
 
-
-
 export default function PersonalDetail({ enabledNext }: PersonalDetailProps) {
     const { resumeInfo, setResumeInfo, resumeEntry, setResumeEntry } =
-        useContext(ResumeInfoContext);
+        useContext(ResumeInfoContext) as ResumeInfoContextType;
 
     const [formData, setFormData] = useState<FormData>({});
     const [loading, setLoading] = useState(false);
@@ -37,12 +38,13 @@ export default function PersonalDetail({ enabledNext }: PersonalDetailProps) {
             [name]: value,
         });
 
-        setResumeInfo({
-            ...resumeInfo,
-            [name]: value,
-        });
+        if (resumeInfo) {
+            setResumeInfo({
+                ...resumeInfo,
+                [name]: value,
+            });
+        }
     };
-
 
     useEffect(() => {
         setFormData({
@@ -98,7 +100,6 @@ export default function PersonalDetail({ enabledNext }: PersonalDetailProps) {
         toast("Details Updated.");
     };
 
-    
     return (
         <div className="p-5 shadow-lg rounded-lg border-t-primary border-t-4 mt-10">
             <h2 className="font-bold text-lg">Personal Detail</h2>

@@ -1,4 +1,7 @@
-import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
+import {
+    ResumeInfoContext,
+    ResumeInfoContextType,
+} from "@/app/context/ResumeInfoContext";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { LoaderCircle, SparklesIcon } from "lucide-react";
@@ -20,7 +23,8 @@ const prompt =
 
 export default function Summery({ enabledNext }: SummaryProps) {
     const { resumeInfo, setResumeInfo, resumeEntry, setResumeEntry } =
-        useContext(ResumeInfoContext);
+    useContext(ResumeInfoContext) as ResumeInfoContextType;
+   // useContext(ResumeInfoContext)
 
     const [loading, setLoading] = useState(false);
 
@@ -32,24 +36,36 @@ export default function Summery({ enabledNext }: SummaryProps) {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setSummary(e.target.value);
-        setResumeInfo({
-            ...resumeInfo,
-            summary: e.target.value,
-        });
+       
+        if (resumeInfo) {
+              setResumeInfo({
+                  ...resumeInfo,
+                  summary: e.target.value,
+              });
+        }
+
+          
+        
     };
     useEffect(() => {
-        summary &&
-            setResumeInfo({
-                ...resumeInfo,
-                summary: summary,
-            });
 
-        setSummary(resumeInfo?.summary);
+        if (resumeInfo) {
+             summary &&
+                 setResumeInfo({
+                     ...resumeInfo,
+                     summary: summary,
+                 });
+
+             setSummary(resumeInfo?.summary);
+        }
+       
+           
+        
     }, []);
 
     const GenerateSummeryFromAI = async () => {
         setLoading(true);
-        const PROMPT = prompt.replace("{jobTitle}", resumeInfo?.jobTitle);
+        const PROMPT = prompt.replace("{jobTitle}", resumeInfo?.jobTitle ?? "");
 
         const result = await AIChatSession.sendMessage(PROMPT);
 
@@ -127,10 +143,15 @@ export default function Summery({ enabledNext }: SummaryProps) {
                             className="p-5 shadow-lg my-4 rounded-lg cursor-pointer"
                             onClick={() => {
                                 setSummary(item?.summary);
-                                setResumeInfo({
-                                    ...resumeInfo,
-                                    summary: item?.summary,
-                                });
+                                if (resumeInfo) {
+                                 setResumeInfo({
+                                     ...resumeInfo,
+                                     summary: item?.summary,
+                                 });     
+                                }
+                                  
+                                
+                                
                             }}
                         >
                             <h2 className="font-bold my-1 text-primary">

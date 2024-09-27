@@ -4,15 +4,29 @@ import { Rating } from "@smastrom/react-rating";
 import "@smastrom/react-rating/style.css";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle } from "lucide-react";
-import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
+import {
+    ResumeInfoContext,
+    ResumeInfoContextType,
+} from "@/app/context/ResumeInfoContext";
 import { client } from "../../[resumeid]/edit/page";
 import { toast } from "sonner";
 
-export default function Skills({ enabledNext }) {
-    const { resumeInfo, setResumeInfo, resumeEntry, setResumeEntry } =
-        useContext(ResumeInfoContext);
+interface SkillsProps {
+    enabledNext: (value: boolean) => void;
+}
 
-    const [skillsList, setSkillsList] = useState([
+interface Skills {
+    id?: string;
+    name: string;
+    rating: number;
+    [key: string]: any;
+}
+
+export default function Skills({ enabledNext }: SkillsProps) {
+    const { resumeInfo, setResumeInfo, resumeEntry, setResumeEntry } =
+        useContext(ResumeInfoContext) as ResumeInfoContextType;
+
+    const [skillsList, setSkillsList] = useState<Skills[]>([
         {
             name: "",
             rating: 0,
@@ -34,7 +48,6 @@ export default function Skills({ enabledNext }) {
     const RemoveSkills = async () => {
         setSkillsList((skillsList) => skillsList.slice(0, -1));
         const lastSkillElement = skillsList[skillsList.length - 1];
-       
 
         if (lastSkillElement.id) {
             const space = await client.getSpace(
@@ -45,7 +58,7 @@ export default function Skills({ enabledNext }) {
 
             resumeEntry.fields.skills = {
                 "en-US": resumeEntry.fields.skills["en-US"].filter(
-                    (skillRef) => skillRef.sys.id !== lastSkillElement.id
+                    (skillRef: any) => skillRef.sys.id !== lastSkillElement.id
                 ),
             };
 
@@ -64,21 +77,21 @@ export default function Skills({ enabledNext }) {
         }
     };
 
-    const handleChange = (index, name, value) => {
+    const handleChange = (index: number, name: string, value: any) => {
         const newEntries = skillsList.slice();
         newEntries[index][name] = value;
 
         setSkillsList(newEntries);
 
-        setResumeInfo({
-            ...resumeInfo,
-            skills: skillsList,
-        });
+        if (resumeInfo) {
+            setResumeInfo({
+                ...resumeInfo,
+                skills: skillsList,
+            });
+        }
     };
 
-    const onSave = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
+    const onSave = async () => {
         setLoading(true);
 
         const space = await client.getSpace(
@@ -127,15 +140,17 @@ export default function Skills({ enabledNext }) {
             }),
         };
 
-       
         const publishedEntry = await updatedResumeEntry.update();
         await publishedEntry.publish();
 
         setResumeEntry(publishedEntry);
-        setResumeInfo({
-            ...resumeInfo,
-            skills: skillsList,
-        });
+        if (resumeInfo) {
+            setResumeInfo({
+                ...resumeInfo,
+                skills: skillsList,
+            });
+        }
+
         enabledNext(true);
         setLoading(false);
         toast("Details Updated.");
@@ -152,34 +167,28 @@ export default function Skills({ enabledNext }) {
 
             <div>
                 {skillsList.map((item, index) => (
-                    <>
-                        <div
-                            key={index}
-                            className="flex justify-between border rounded-lg p-3 mb-2"
-                        >
-                            <div>
-                                <label className="text-xs">Name</label>
-                                <Input
-                                    value={item.name}
-                                    className="w-full"
-                                    onChange={(e) =>
-                                        handleChange(
-                                            index,
-                                            "name",
-                                            e.target.value
-                                        )
-                                    }
-                                />
-                            </div>
-                            <Rating
-                                style={{ maxWidth: 120 }}
-                                value={item.rating}
-                                onChange={(v) =>
-                                    handleChange(index, "rating", v)
+                    <div
+                        key={index}
+                        className="flex justify-between border rounded-lg p-3 mb-2"
+                    >
+                        <div>
+                            <label className="text-xs">Name</label>
+                            <Input
+                                value={item.name}
+                                className="w-full"
+                                onChange={(e) =>
+                                    handleChange(index, "name", e.target.value)
                                 }
                             />
                         </div>
-                    </>
+                        <Rating
+                            style={{ maxWidth: 120 }}
+                            value={item.rating}
+                            onChange={(v: number) =>
+                                handleChange(index, "rating", v)
+                            }
+                        />
+                    </div>
                 ))}
             </div>
 
@@ -203,7 +212,7 @@ export default function Skills({ enabledNext }) {
                     </Button>
                 </div>
 
-                <Button disabled={loading} onClick={onSave}>
+                <Button disabled={loading} onClick={() => onSave()}>
                     {loading ? (
                         <LoaderCircle className="animate-spin" />
                     ) : (
