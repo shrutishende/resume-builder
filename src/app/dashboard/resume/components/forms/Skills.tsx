@@ -32,35 +32,37 @@ export default function Skills({ enabledNext }) {
     };
 
     const RemoveSkills = async () => {
-        //  setSkillsList((skillsList) => skillsList.slice(0, -1));
-        async function deleteSkill() {
-            const lastSkillElement = skillsList[skillsList.length - 1];
-            console.log("last skill", lastSkillElement);
+        setSkillsList((skillsList) => skillsList.slice(0, -1));
+        const lastSkillElement = skillsList[skillsList.length - 1];
+       
 
-            if (lastSkillElement.id) {
-                const space = await client.getSpace(
-                    process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID
-                );
+        if (lastSkillElement.id) {
+            const space = await client.getSpace(
+                process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID
+            );
 
-                const environment = await space.getEnvironment("master");
+            const environment = await space.getEnvironment("master");
 
-                const entryToDelete = await environment.getEntry(
-                    lastSkillElement.id
-                );
+            resumeEntry.fields.skills = {
+                "en-US": resumeEntry.fields.skills["en-US"].filter(
+                    (skillRef) => skillRef.sys.id !== lastSkillElement.id
+                ),
+            };
 
-                await entryToDelete.unpublish(); // Unpublish if published
-                await entryToDelete.delete();
+            const publishEntry = await resumeEntry.update();
 
-                console.log("entry to delete", entryToDelete);
-            }
+            await publishEntry.publish();
 
-            
+            const entryToDelete = await environment.getEntry(
+                lastSkillElement.id
+            );
+
+            await entryToDelete.unpublish();
+            await entryToDelete.delete();
+
+            setResumeEntry(resumeEntry);
         }
-        deleteSkill();
     };
-    console.log("skill list", skillsList);
-    console.log("resume info", resumeInfo);
-    console.log("resume entry", resumeEntry);
 
     const handleChange = (index, name, value) => {
         const newEntries = skillsList.slice();
@@ -75,14 +77,15 @@ export default function Skills({ enabledNext }) {
     };
 
     const onSave = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        setLoading(true);
+
         const space = await client.getSpace(
             process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID
         );
 
         const environment = await space.getEnvironment("master");
-        e.preventDefault();
-
-      //  setLoading(true);
 
         for (let i = 0; i < skillsList.length; i++) {
             if (!skillsList[i].hasOwnProperty("id")) {
@@ -98,6 +101,14 @@ export default function Skills({ enabledNext }) {
                 skillsList[i].id = skillID;
 
                 await skillEntry.publish();
+            } else {
+                const skillEntry = await environment.getEntry(skillsList[i].id);
+
+                skillEntry.fields.skill = { "en-US": skillsList[i].name };
+                skillEntry.fields.rating = { "en-US": skillsList[i].rating };
+
+                const updatedSkillEntry = await skillEntry.update();
+                updatedSkillEntry.publish();
             }
         }
         const updatedResumeEntry = await environment.getEntry(
@@ -116,6 +127,7 @@ export default function Skills({ enabledNext }) {
             }),
         };
 
+       
         const publishedEntry = await updatedResumeEntry.update();
         await publishedEntry.publish();
 
@@ -124,8 +136,8 @@ export default function Skills({ enabledNext }) {
             ...resumeInfo,
             skills: skillsList,
         });
-       // enabledNext(true);
-       // setLoading(false);
+        enabledNext(true);
+        setLoading(false);
         toast("Details Updated.");
     };
 
