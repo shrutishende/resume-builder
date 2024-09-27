@@ -18,24 +18,15 @@ function ResumePreview({}: Props) {
                 borderColor: resumeInfo?.themeColor,
             }}
         >
-            {/* Personal Details */}
-
             <PersonelDetailPreview resumeInfo={resumeInfo} />
 
-            {/* <SummeryPreview resumeInfo={resumeInfo} /> */}
             <SummeryPreview />
 
-            {/* professional experience */}
-            {/* <ExperiencePreview resumeInfo={resumeInfo} /> */}
+            <SkillsPreview />
+
             <ExperiencePreview />
 
-            {/* education */}
-            {/* <EducationPreview resumeInfo={resumeInfo} /> */}
             <EducationPreview />
-
-            {/* skills */}
-            {/* <SkillsPreview resumeInfo={resumeInfo} /> */}
-            <SkillsPreview />
         </div>
     );
 }
