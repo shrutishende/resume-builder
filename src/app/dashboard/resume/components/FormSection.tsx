@@ -44,9 +44,9 @@ export default function FormSection() {
             ) : activeFormIndex === 2 ? (
                 <Summery enabledNext={(v: boolean) => setEnableNext(v)} />
             ) : activeFormIndex === 3 ? (
-                <Experience enabledNext={(v: boolean) => setEnableNext(v)} />
+                <Skills enabledNext={(v: boolean) => setEnableNext(v)} />
             ) : activeFormIndex === 4 ? (
-                <Skills />
+                <Experience enabledNext={(v: boolean) => setEnableNext(v)} />
             ) : null}
         </div>
     );
