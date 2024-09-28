@@ -1,7 +1,11 @@
-import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
+import { ResumeInfoContext, ResumeInfoContextType } from "@/app/context/ResumeInfoContext";
 import React, { use, useContext } from "react";
 
-export default function PersonelDetailPreview({ resumeInfo }) {
+export default function PersonelDetailPreview() {
+
+    const { resumeInfo } = useContext(
+        ResumeInfoContext
+    ) as ResumeInfoContextType;
     return (
         <div>
             <h2

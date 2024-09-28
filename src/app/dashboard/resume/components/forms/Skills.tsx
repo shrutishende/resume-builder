@@ -8,8 +8,9 @@ import {
     ResumeInfoContext,
     ResumeInfoContextType,
 } from "@/app/context/ResumeInfoContext";
-import { client } from "../../[resumeid]/edit/page";
+
 import { toast } from "sonner";
+import { client } from "@/lib/contentful/client";
 
 interface SkillsProps {
     enabledNext: (value: boolean) => void;

@@ -7,23 +7,17 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useUser } from "@clerk/nextjs";
-import { redirect, useRouter } from "next/navigation";
-const contentfulManagement = require("contentful-management");
-
-
-export const client = contentfulManagement.createClient({
-    accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN,
-});
+import { useRouter } from "next/navigation";
+import { client } from "@/lib/contentful/client";
 
 export default function AddResume() {
     const [openDialog, setOpenDialog] = useState(false);
-    const [resumeTitle, setResumeTitle] = useState();
+    const [resumeTitle, setResumeTitle] = useState("");
     const { user } = useUser();
     const [loading, setLoading] = useState(false);
 
@@ -32,7 +26,7 @@ export default function AddResume() {
     const onCreate = async () => {
         setLoading(true);
         const uuid = uuidv4();
-        // console.log("uuid", uuid);
+
         const data = {
             title: resumeTitle,
             id: uuid,
@@ -41,7 +35,6 @@ export default function AddResume() {
             userId: user?.id,
         };
 
-        console.log("data", data);
         const space = await client.getSpace(
             process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID
         );
@@ -59,7 +52,6 @@ export default function AddResume() {
         });
 
         await resumeEntry.publish();
-        console.log("resumeEntry", resumeEntry);
 
         setLoading(false);
         await router.push(`/dashboard/resume/${resumeEntry.sys.id}/edit`);

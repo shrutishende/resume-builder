@@ -1,4 +1,4 @@
-import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
+import { ResumeInfoContext, ResumeInfoContextType } from "@/app/context/ResumeInfoContext";
 import React, { useContext } from "react";
 import PersonelDetailPreview from "./preview/PersonelDetailPreview";
 import ExperiencePreview from "./preview/ExperiencePreview";
@@ -9,7 +9,10 @@ import SummeryPreview from "./preview/SummeryPreview";
 type Props = {};
 
 function ResumePreview({}: Props) {
-    const { resumeInfo } = useContext(ResumeInfoContext);
+    const { resumeInfo } = useContext(
+        ResumeInfoContext
+    ) as ResumeInfoContextType;
+        useContext(ResumeInfoContext);
 
     return (
         <div
@@ -18,7 +21,7 @@ function ResumePreview({}: Props) {
                 borderColor: resumeInfo?.themeColor,
             }}
         >
-            <PersonelDetailPreview resumeInfo={resumeInfo} />
+            <PersonelDetailPreview  />
 
             <SummeryPreview />
 

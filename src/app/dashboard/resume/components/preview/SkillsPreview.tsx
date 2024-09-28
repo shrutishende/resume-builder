@@ -1,11 +1,15 @@
-import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
+import {
+    ResumeInfoContext,
+    ResumeInfoContextType,
+} from "@/app/context/ResumeInfoContext";
 import React, { useContext } from "react";
 
-
-
 export default function SkillsPreview() {
-    const { resumeInfo } = useContext(ResumeInfoContext);
-  //  console.log("resumeInfo previueeeee", resumeInfo);
+    const { resumeInfo } = useContext(
+        ResumeInfoContext
+    ) as ResumeInfoContextType;
+    //    useContext(ResumeInfoContext);
+  
     return (
         <div className="my-6">
             <h2

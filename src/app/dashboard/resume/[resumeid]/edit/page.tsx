@@ -6,15 +6,10 @@ import ResumePreview from "../../components/ResumePreview";
 import {
     ResumeInfoContext,
     ResumeEntry,
-    Skills,
 } from "@/app/context/ResumeInfoContext";
 import dummy from "@/app/data/dummy";
-
-const contentfulManagement = require("contentful-management");
-
-export const client = contentfulManagement.createClient({
-    accessToken: process.env.NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN,
-});
+import { client } from "@/lib/contentful/client";
+import { cookies } from "next/headers";
 
 export default function EditResume({
     params,
@@ -39,7 +34,7 @@ export default function EditResume({
 
             setResumeEntry(entry.items[0]);
 
-            let skillStore = []
+            let skillStore = [];
 
             if (entry.items[0].fields.skills) {
                 const raw_skills = entry.items[0].fields.skills["en-US"];
@@ -61,17 +56,57 @@ export default function EditResume({
                 });
 
                 const skills = await Promise.all(skill_id_promise);
-                skillStore= skills
+                skillStore = skills;
             }
-                console.log("skill store", skillStore)
 
-            const firstName = entry.items[0].fields.firstName["en-US"];
-            const lastName = entry.items[0].fields.lastName["en-US"];
-            const jobTitle = entry.items[0].fields.title["en-US"];
-            const address = entry.items[0].fields.address["en-US"];
-            const phone = entry.items[0].fields.phone["en-US"];
-            const email = entry.items[0].fields.email["en-US"];
-            const summary = entry.items[0].fields.summery["en-US"];
+            let firstName;
+            if (entry.items[0].fields.firstName) {
+                const firstname = entry.items[0].fields.firstName["en-US"];
+                firstName = firstname;
+            }
+
+            let lastName;
+            if (entry.items[0].fields.lastName) {
+                const lastname = entry.items[0].fields.lastName["en-US"];
+                lastName = lastname;
+            }
+
+            let jobTitle;
+            if (entry.items[0].fields.title) {
+                const jobtitle = entry.items[0].fields.title["en-US"];
+                jobTitle = jobtitle;
+            }
+
+            let address;
+            if (entry.items[0].fields.address) {
+                const Address = entry.items[0].fields.address["en-US"];
+                address = Address;
+            }
+
+            let phone;
+            if (entry.items[0].fields.phone) {
+                const Phone = entry.items[0].fields.phone["en-US"];
+                phone = Phone;
+            }
+
+            let email;
+            if (entry.items[0].fields.email) {
+                const Email = entry.items[0].fields.email["en-US"];
+                email = Email;
+            }
+
+            let summary;
+            if (entry.items[0].fields.summery) {
+                const Summary = entry.items[0].fields.summery["en-US"];
+                summary = Summary;
+            }
+
+            //   const lastName = entry.items[0].fields.lastName["en-US"];
+            // const jobTitle = entry.items[0].fields.title["en-US"];
+            //   const address = entry.items[0].fields.address["en-US"];
+            //  const phone = entry.items[0].fields.phone["en-US"];
+            //  const email = entry.items[0].fields.email["en-US"];
+            //  const summary = entry.items[0].fields.summery["en-US"];
 
             setResumeInfo({
                 ...dummy,
@@ -82,7 +117,7 @@ export default function EditResume({
                 phone: phone,
                 email: email,
                 summary: summary,
-                skills: skillStore
+                skills: skillStore,
             });
         };
         getData();

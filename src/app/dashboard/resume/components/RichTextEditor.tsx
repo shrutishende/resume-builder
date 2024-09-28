@@ -1,4 +1,7 @@
-import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
+import {
+    ResumeInfoContext,
+    ResumeInfoContextType,
+} from "@/app/context/ResumeInfoContext";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle, SparklesIcon } from "lucide-react";
 import React, { useContext, useState } from "react";
@@ -21,14 +24,16 @@ import { AIChatSession } from "../../../../../service/AImodal";
 const PROMPT =
     "position titile: {positionTitle} , Depends on position title give me 5-7 bullet points for my experience in resume (Please do not add experince level and No JSON array) , give me result in HTML format";
 
-export default function RichTextEditor({ onRichTextEditorChange, index }) {
-    const [value, setValue] = useState();
-    const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
+export default function RichTextEditor({ onRichTextEditorChange, index }:any) {
+    const [value, setValue] = useState("");
+    const { resumeInfo, setResumeInfo } = useContext(
+        ResumeInfoContext
+    ) as ResumeInfoContextType;
     const [loading, setLoading] = useState(false);
 
     const GenerateSummaryFromAi = async () => {
         setLoading(true);
-        if (!resumeInfo.experience[index].title) {
+        if (!resumeInfo?.experience[index].title) {
             toast("Please add position title");
             return;
         }
@@ -52,7 +57,6 @@ export default function RichTextEditor({ onRichTextEditorChange, index }) {
         setLoading(false);
     };
 
-    console.log(value);
     return (
         <div>
             <div className="flex justify-between my-2 ">
