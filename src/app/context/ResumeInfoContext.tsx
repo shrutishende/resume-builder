@@ -18,16 +18,16 @@ export interface ResumeEntry {
 }
 
 export interface Experience {
-    id: string;
+    id?: string;
     title: string;
     companyName: string;
     city: string;
     state: string;
-    startDate: string;
-    endDate: string;
+    startDate?: string;
+    endDate?: string;
     currentlyWorking: boolean;
     workSummary: string;
-   // [key: string]: any;
+    [key: string]: any;
 }
 
 export interface Education {
@@ -57,7 +57,6 @@ export type ResumeInfoContextType = {
 export const ResumeInfoContext = createContext<
     ResumeInfoContextType | undefined
 >(undefined);
-
 
 // export default function useResumeInfoContext() {
 //     let { resumeInfo, setResumeInfo, resumeEntry, setResumeEntry } = useContext(

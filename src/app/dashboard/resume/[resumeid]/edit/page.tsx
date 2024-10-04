@@ -6,10 +6,12 @@ import ResumePreview from "../../components/ResumePreview";
 import {
     ResumeInfoContext,
     ResumeEntry,
+    Skills,
 } from "@/app/context/ResumeInfoContext";
 import dummy from "@/app/data/dummy";
 import { client } from "@/lib/contentful/client";
-import { warnOptionHasBeenMovedOutOfExperimental } from "next/dist/server/config";
+
+
 
 export default function EditResume({
     params,
@@ -51,7 +53,8 @@ export default function EditResume({
 
                     console.log("skill entry", skill_entry.items[0])
 
-                    const skill = {};
+                    const skill:any = {}
+                     
                     skill.id = skill_id;
                     if (skill_entry.items[0].fields.skill) {
                         skill.name = skill_entry.items[0].fields.skill["en-US"];
@@ -80,7 +83,6 @@ export default function EditResume({
                 const raw_experience =
                     entry.items[0].fields.experience["en-US"];
 
-                // console.log("raw exp", raw_experience);
 
                 const experience_id_promise = raw_experience.map(
                     async (id: any) => {
@@ -91,9 +93,8 @@ export default function EditResume({
                             "sys.id": experience_id,
                         });
 
-                        console.log("exp entry", experience_entry);
 
-                        const experience = {};
+                        const experience:any = {};
 
                         experience.id = experience_id;
                         experience.city =

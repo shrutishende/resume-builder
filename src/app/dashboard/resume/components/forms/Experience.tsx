@@ -25,24 +25,39 @@ const formField = {
     currentlyWorking: false,
 };
 
-// interface Experience {
-//     id?: string;
-//     title: string;
-//     companyName: string;
-//     city: string;
-//     state: string;
-//     startDate: string;
-//     endDate: string;
-//     currentlyWorking: boolean;
-//     workSummary: string;
-//     [key: string]: any;
-// }
+interface Experience {
+    id?: string;
+    title: string;
+    companyName: string;
+    city: string;
+    state: string;
+    startDate?: string;
+    endDate?: string;
+    currentlyWorking: boolean;
+    workSummary: string;
+    [key: string]: any;
+}
+
+interface ExperienceList {
+    id?: string;
+    title: { "en-US": string | undefined }; // Update title type
+    companyName: { "en-US": string }; // Update companyName type
+    city: { "en-US": string }; // Update city type
+    state: { "en-US": string }; // Update state type
+    startDate?: { "en-US": string }; // Update startDate type
+    endDate?: { "en-US": string }; // Update endDate type
+    // currentlyWorking: boolean;
+    workSummary: { "en-US": string }; // Update workSummary type
+    [key: string]: any;
+}
 
 export default function Experience({ enabledNext }: ExperienceProps) {
     const { resumeInfo, setResumeInfo, resumeEntry, setResumeEntry } =
         useContext(ResumeInfoContext) as ResumeInfoContextType;
 
-    const [experienceList, setExperienceList] = useState([formField]);
+    const [experienceList, setExperienceList] = useState<Experience[]>([
+        formField,
+    ]);
 
     const [loading, setLoading] = useState(false);
 
@@ -79,8 +94,6 @@ export default function Experience({ enabledNext }: ExperienceProps) {
 
         const lastExperienceElement = experienceList[experienceList.length - 1];
 
-       
-
         if (lastExperienceElement.id) {
             const space = await client.getSpace(
                 process.env.NEXT_PUBLIC_CONTENTFUL_SPACE_ID
@@ -88,12 +101,9 @@ export default function Experience({ enabledNext }: ExperienceProps) {
 
             const environment = await space.getEnvironment("master");
 
-
             const updatedResumeEntry = await environment.getEntry(
                 resumeEntry.sys.id
             );
-
-           
 
             updatedResumeEntry.fields.experience = {
                 "en-US": updatedResumeEntry.fields.experience["en-US"].filter(
@@ -101,8 +111,6 @@ export default function Experience({ enabledNext }: ExperienceProps) {
                         experienceRef.sys.id !== lastExperienceElement.id
                 ),
             };
-
-           
 
             const publishEntry = await updatedResumeEntry.update();
 
@@ -119,9 +127,7 @@ export default function Experience({ enabledNext }: ExperienceProps) {
         }
     };
 
-   
-
-    const handleRichTextEditor = (e, name, index) => {
+    const handleRichTextEditor = (e: any, name: string, index: number) => {
         const newEntries = experienceList.slice();
         newEntries[index][name] = e.target.value;
         setExperienceList(newEntries);
@@ -142,7 +148,7 @@ export default function Experience({ enabledNext }: ExperienceProps) {
         const environment = await space.getEnvironment("master");
 
         for (let i = 0; i < experienceList.length; i++) {
-            const experience = {
+            const experience: ExperienceList = {
                 title: { "en-US": experienceList[i].title },
                 companyName: { "en-US": experienceList[i].companyName },
                 city: { "en-US": experienceList[i].city },
@@ -151,18 +157,18 @@ export default function Experience({ enabledNext }: ExperienceProps) {
             };
 
             if (experienceList[i].startDate) {
-                console.log("here 2");
-                experience.startDate = { "en-US": experienceList[i].startDate };
+                experience.startDate = {
+                    "en-US": experienceList[i].startDate || "",
+                };
             }
 
             if (experienceList[i].endDate) {
-                console.log("here 3");
-                experience.endDate = { "en-US": experienceList[i].endDate };
+                experience.endDate = {
+                    "en-US": experienceList[i].endDate || "",
+                };
             }
 
-            //console.log("for lopp", experience);
             if (!experienceList[i].hasOwnProperty("id")) {
-                console.log("experience here 1", experience);
                 const experienceEntry = await environment.createEntry(
                     "experience",
                     {
@@ -170,16 +176,13 @@ export default function Experience({ enabledNext }: ExperienceProps) {
                     }
                 );
 
-                console.log("exp entry", experienceEntry);
-
                 const experienceID = experienceEntry.sys.id;
 
                 experienceList[i].id = experienceID;
 
                 await experienceEntry.publish();
             } else {
-
-                console.log("here 4")
+                console.log("here 4");
                 const experienceEntry = await environment.getEntry(
                     experienceList[i].id
                 );
@@ -200,23 +203,18 @@ export default function Experience({ enabledNext }: ExperienceProps) {
                     "en-US": experienceList[i].state,
                 };
 
-
                 if (experienceEntry.fields.startDate) {
-
                     experienceEntry.fields.startDate = {
                         "en-US": experienceList[i].startDate,
                     };
                 }
 
+                if (experienceEntry.fields.endDate) {
+                    experienceEntry.fields.endDate = {
+                        "en-US": experienceList[i].endDate,
+                    };
+                }
 
-                 if (experienceEntry.fields.endDate) {
-                     experienceEntry.fields.endDate = {
-                         "en-US": experienceList[i].endDate,
-                     };
-                 }
-                
-
-               
                 experienceEntry.fields.workSummary = {
                     "en-US": experienceList[i].workSummary,
                 };
@@ -341,7 +339,9 @@ export default function Experience({ enabledNext }: ExperienceProps) {
                                     <RichTextEditor
                                         value={item.workSummary}
                                         index={index}
-                                        onRichTextEditorChange={(event) => {
+                                        onRichTextEditorChange={(
+                                            event: any
+                                        ) => {
                                             handleRichTextEditor(
                                                 event,
                                                 "workSummary",
