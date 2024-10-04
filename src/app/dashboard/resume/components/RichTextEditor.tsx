@@ -4,7 +4,7 @@ import {
 } from "@/app/context/ResumeInfoContext";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle, SparklesIcon } from "lucide-react";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     BtnBold,
     BtnBulletList,
@@ -22,13 +22,19 @@ import { toast } from "sonner";
 import { AIChatSession } from "../../../../../service/AImodal";
 
 const PROMPT =
-    "position titile: {positionTitle} , Depends on position title give me 5-7 bullet points for my experience in resume (Please do not add experince level and No JSON array) , give me result in HTML format";
+    "depends on given position title: {positionTitle}  give me response in json format and format should be like {summary : experience_summary } and experience summary value will be of html tags and should be in bullet points";
 
-export default function RichTextEditor({ onRichTextEditorChange, index }:any) {
-    const [value, setValue] = useState("");
+export default function RichTextEditor({
+    onRichTextEditorChange,
+    index,
+    value,
+}: any) {
+    const [values, setValues] = useState(value);
+
     const { resumeInfo, setResumeInfo } = useContext(
         ResumeInfoContext
     ) as ResumeInfoContextType;
+
     const [loading, setLoading] = useState(false);
 
     const GenerateSummaryFromAi = async () => {
@@ -45,17 +51,26 @@ export default function RichTextEditor({ onRichTextEditorChange, index }:any) {
 
         const result = await AIChatSession.sendMessage(prompt);
 
-        console.log(result.response.text());
         const resp = result.response.text();
-        setValue(
-            resp
-                .replace("[", "")
-                .replace("]", "")
-                .replace("{", "")
-                .replace("}", "")
-        );
+
+        const parseData = JSON.parse(resp);
+
         setLoading(false);
+
+        setValues(parseData.summary);
+
+        const experiences = resumeInfo.experience;
+        experiences[index].workSummary = parseData.summary;
+
+        setResumeInfo({
+            ...resumeInfo,
+            experience: experiences,
+        });
     };
+
+    useEffect(() => {
+        setValues(resumeInfo?.experience[index]?.workSummary);
+    }, []);
 
     return (
         <div>
@@ -77,9 +92,9 @@ export default function RichTextEditor({ onRichTextEditorChange, index }:any) {
             </div>
             <EditorProvider>
                 <Editor
-                    value={value}
+                    value={values}
                     onChange={(e) => {
-                        setValue(e.target.value);
+                        setValues(e.target.value);
                         onRichTextEditorChange(e);
                     }}
                 >

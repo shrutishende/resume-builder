@@ -9,7 +9,7 @@ import {
 } from "@/app/context/ResumeInfoContext";
 import dummy from "@/app/data/dummy";
 import { client } from "@/lib/contentful/client";
-import { cookies } from "next/headers";
+import { warnOptionHasBeenMovedOutOfExperimental } from "next/dist/server/config";
 
 export default function EditResume({
     params,
@@ -42,22 +42,94 @@ export default function EditResume({
                 const skill_id_promise = raw_skills.map(async (id: any) => {
                     const skill_id = id.sys.id;
 
+                    console.log(skill_id)
+
                     const skill_entry = await environment.getEntries({
                         content_type: "skills",
                         "sys.id": skill_id,
                     });
 
-                    const skill = {
-                        id: skill_id,
-                        name: skill_entry.items[0].fields.skill["en-US"],
-                        rating: skill_entry.items[0].fields.rating["en-US"],
-                    };
+                    console.log("skill entry", skill_entry.items[0])
+
+                    const skill = {};
+                    skill.id = skill_id;
+                    if (skill_entry.items[0].fields.skill) {
+                        skill.name = skill_entry.items[0].fields.skill["en-US"];
+                    }
+                    if (skill_entry.items[0].fields.rating) {
+                        skill.rating =
+                            skill_entry.items[0].fields.rating["en-US"];
+                    }
+
+                    // const skill = {
+                    //     id: skill_id,
+
+                    //     name: skill_entry.items[0].fields.skill["en-US"],
+                    //     rating: skill_entry.items[0].fields.rating["en-US"],
+                    // };
                     return skill;
                 });
 
                 const skills = await Promise.all(skill_id_promise);
                 skillStore = skills;
             }
+
+            let experienceStore = [];
+
+            if (entry.items[0].fields.experience) {
+                const raw_experience =
+                    entry.items[0].fields.experience["en-US"];
+
+                // console.log("raw exp", raw_experience);
+
+                const experience_id_promise = raw_experience.map(
+                    async (id: any) => {
+                        const experience_id = id.sys.id;
+
+                        const experience_entry = await environment.getEntries({
+                            content_type: "experience",
+                            "sys.id": experience_id,
+                        });
+
+                        console.log("exp entry", experience_entry);
+
+                        const experience = {};
+
+                        experience.id = experience_id;
+                        experience.city =
+                            experience_entry.items[0].fields.city["en-US"];
+                        experience.companyName =
+                            experience_entry.items[0].fields.companyName[
+                                "en-US"
+                            ];
+                        experience.state =
+                            experience_entry.items[0].fields.state["en-US"];
+                        experience.title =
+                            experience_entry.items[0].fields.title["en-US"];
+                        experience.workSummary =
+                            experience_entry.items[0].fields.workSummary[
+                                "en-US"
+                            ];
+                        if (experience_entry.items[0].fields.startDate) {
+                            experience.startDate =
+                                experience_entry.items[0].fields.startDate[
+                                    "en-US"
+                                ];
+                        }
+                        if (experience_entry.items[0].fields.endDate) {
+                            experience.endDate =
+                                experience_entry.items[0].fields.endDate[
+                                    "en-US"
+                                ];
+                        }
+
+                        return experience;
+                    }
+                );
+                const experience = await Promise.all(experience_id_promise);
+                experienceStore = experience;
+            }
+            console.log("exp store", experienceStore);
 
             let firstName;
             if (entry.items[0].fields.firstName) {
@@ -101,13 +173,6 @@ export default function EditResume({
                 summary = Summary;
             }
 
-            //   const lastName = entry.items[0].fields.lastName["en-US"];
-            // const jobTitle = entry.items[0].fields.title["en-US"];
-            //   const address = entry.items[0].fields.address["en-US"];
-            //  const phone = entry.items[0].fields.phone["en-US"];
-            //  const email = entry.items[0].fields.email["en-US"];
-            //  const summary = entry.items[0].fields.summery["en-US"];
-
             setResumeInfo({
                 ...dummy,
                 firstName: firstName,
@@ -118,6 +183,7 @@ export default function EditResume({
                 email: email,
                 summary: summary,
                 skills: skillStore,
+                experience: experienceStore,
             });
         };
         getData();

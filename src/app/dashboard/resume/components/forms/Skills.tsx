@@ -27,6 +27,8 @@ export default function Skills({ enabledNext }: SkillsProps) {
     const { resumeInfo, setResumeInfo, resumeEntry, setResumeEntry } =
         useContext(ResumeInfoContext) as ResumeInfoContextType;
 
+    
+    
     const [skillsList, setSkillsList] = useState<Skills[]>([
         {
             name: "",
@@ -57,13 +59,19 @@ export default function Skills({ enabledNext }: SkillsProps) {
 
             const environment = await space.getEnvironment("master");
 
-            resumeEntry.fields.skills = {
-                "en-US": resumeEntry.fields.skills["en-US"].filter(
+             const updatedResumeEntry = await environment.getEntry(
+                 resumeEntry.sys.id
+             );
+
+            updatedResumeEntry.fields.skills = {
+                "en-US": updatedResumeEntry.fields.skills["en-US"].filter(
                     (skillRef: any) => skillRef.sys.id !== lastSkillElement.id
                 ),
             };
 
-            const publishEntry = await resumeEntry.update();
+            console.log("uppppppppp",updatedResumeEntry)
+
+            const publishEntry = await updatedResumeEntry.update();
 
             await publishEntry.publish();
 
@@ -74,7 +82,7 @@ export default function Skills({ enabledNext }: SkillsProps) {
             await entryToDelete.unpublish();
             await entryToDelete.delete();
 
-            setResumeEntry(resumeEntry);
+            setResumeEntry(publishEntry);
         }
     };
 

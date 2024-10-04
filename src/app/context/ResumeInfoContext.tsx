@@ -18,7 +18,7 @@ export interface ResumeEntry {
 }
 
 export interface Experience {
-    id: number;
+    id: string;
     title: string;
     companyName: string;
     city: string;
@@ -27,6 +27,7 @@ export interface Experience {
     endDate: string;
     currentlyWorking: boolean;
     workSummary: string;
+   // [key: string]: any;
 }
 
 export interface Education {
