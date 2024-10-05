@@ -11,8 +11,6 @@ import {
 import dummy from "@/app/data/dummy";
 import { client } from "@/lib/contentful/client";
 
-
-
 export default function EditResume({
     params,
 }: {
@@ -20,6 +18,7 @@ export default function EditResume({
 }) {
     const [resumeInfo, setResumeInfo] = useState<null | ResumeEntry>(null);
     const [resumeEntry, setResumeEntry] = useState<any | null>(null);
+
 
     useEffect(() => {
         const getData = async () => {
@@ -44,17 +43,13 @@ export default function EditResume({
                 const skill_id_promise = raw_skills.map(async (id: any) => {
                     const skill_id = id.sys.id;
 
-                    console.log(skill_id)
-
                     const skill_entry = await environment.getEntries({
                         content_type: "skills",
                         "sys.id": skill_id,
                     });
 
-                    console.log("skill entry", skill_entry.items[0])
+                    const skill: any = {};
 
-                    const skill:any = {}
-                     
                     skill.id = skill_id;
                     if (skill_entry.items[0].fields.skill) {
                         skill.name = skill_entry.items[0].fields.skill["en-US"];
@@ -64,12 +59,6 @@ export default function EditResume({
                             skill_entry.items[0].fields.rating["en-US"];
                     }
 
-                    // const skill = {
-                    //     id: skill_id,
-
-                    //     name: skill_entry.items[0].fields.skill["en-US"],
-                    //     rating: skill_entry.items[0].fields.rating["en-US"],
-                    // };
                     return skill;
                 });
 
@@ -77,12 +66,76 @@ export default function EditResume({
                 skillStore = skills;
             }
 
+            let educationStore = [];
+
+            if (entry.items[0].fields.education) {
+                const raw_education = entry.items[0].fields.education["en-US"];
+
+                const education_id_promise = raw_education.map(
+                    async (id: any) => {
+                        const education_id = id.sys.id;
+
+                        const education_entry = await environment.getEntries({
+                            content_type: "education",
+                            "sys.id": education_id,
+                        });
+
+                        const education: any = {};
+
+                        education.id = education_id;
+
+                        if (education_entry.items[0].fields.universityName) {
+                            education.universityName =
+                                education_entry.items[0].fields.universityName[
+                                    "en-US"
+                                ];
+                        }
+                        if (education_entry.items[0].fields.degree) {
+                            education.degree =
+                                education_entry.items[0].fields.degree["en-US"];
+                        }
+
+                        if (education_entry.items[0].fields.major) {
+                            education.major =
+                                education_entry.items[0].fields.major["en-US"];
+                        }
+
+                        if (education_entry.items[0].fields.startDate) {
+                            education.startDate =
+                                education_entry.items[0].fields.startDate[
+                                    "en-US"
+                                ];
+                        }
+
+                        if (education_entry.items[0].fields.endDate) {
+                            education.endDate =
+                                education_entry.items[0].fields.endDate[
+                                    "en-US"
+                                ];
+                        }
+
+                        if (education_entry.items[0].fields.description) {
+                            education.description =
+                                education_entry.items[0].fields.description[
+                                    "en-US"
+                                ];
+                        }
+
+                        return education;
+                    }
+                );
+
+                const education = await Promise.all(education_id_promise);
+                educationStore = education;
+            }
+
+        
+
             let experienceStore = [];
 
             if (entry.items[0].fields.experience) {
                 const raw_experience =
                     entry.items[0].fields.experience["en-US"];
-
 
                 const experience_id_promise = raw_experience.map(
                     async (id: any) => {
@@ -93,8 +146,7 @@ export default function EditResume({
                             "sys.id": experience_id,
                         });
 
-
-                        const experience:any = {};
+                        const experience: any = {};
 
                         experience.id = experience_id;
                         experience.city =
@@ -130,8 +182,6 @@ export default function EditResume({
                 const experience = await Promise.all(experience_id_promise);
                 experienceStore = experience;
             }
-            console.log("exp store", experienceStore);
-
             let firstName;
             if (entry.items[0].fields.firstName) {
                 const firstname = entry.items[0].fields.firstName["en-US"];
@@ -185,6 +235,7 @@ export default function EditResume({
                 summary: summary,
                 skills: skillStore,
                 experience: experienceStore,
+                education: educationStore,
             });
         };
         getData();

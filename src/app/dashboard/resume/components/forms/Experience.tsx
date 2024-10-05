@@ -40,14 +40,14 @@ interface Experience {
 
 interface ExperienceList {
     id?: string;
-    title: { "en-US": string | undefined }; // Update title type
-    companyName: { "en-US": string }; // Update companyName type
-    city: { "en-US": string }; // Update city type
-    state: { "en-US": string }; // Update state type
-    startDate?: { "en-US": string }; // Update startDate type
-    endDate?: { "en-US": string }; // Update endDate type
+    title: { "en-US": string | undefined };
+    companyName: { "en-US": string };
+    city: { "en-US": string };
+    state: { "en-US": string };
+    startDate?: { "en-US": string };
+    endDate?: { "en-US": string };
     // currentlyWorking: boolean;
-    workSummary: { "en-US": string }; // Update workSummary type
+    workSummary: { "en-US": string };
     [key: string]: any;
 }
 
@@ -182,7 +182,6 @@ export default function Experience({ enabledNext }: ExperienceProps) {
 
                 await experienceEntry.publish();
             } else {
-                console.log("here 4");
                 const experienceEntry = await environment.getEntry(
                     experienceList[i].id
                 );

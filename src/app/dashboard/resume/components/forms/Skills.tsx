@@ -69,7 +69,6 @@ export default function Skills({ enabledNext }: SkillsProps) {
                 ),
             };
 
-            console.log("uppppppppp",updatedResumeEntry)
 
             const publishEntry = await updatedResumeEntry.update();
 

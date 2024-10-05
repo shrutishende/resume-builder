@@ -31,13 +31,14 @@ export interface Experience {
 }
 
 export interface Education {
-    id: number;
+    id?: string;
     universityName: string;
     startDate: string;
     endDate: string;
     major: string;
     degree: string;
     description: string;
+    [key: string]: any;
 }
 
 export interface Skills {
