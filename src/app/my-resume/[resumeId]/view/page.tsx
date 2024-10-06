@@ -1,24 +1,22 @@
 "use client";
-import Header from "@/components/custom/Header";
-import React, { useEffect, useState } from "react";
-import FormSection from "../../components/FormSection";
-import ResumePreview from "../../components/ResumePreview";
-import {
-    ResumeInfoContext,
-    ResumeEntry,
-    Skills,
-} from "@/app/context/ResumeInfoContext";
-//import dummy from "@/app/data/dummy";
-import { client } from "@/lib/contentful/client";
+import { ResumeEntry, ResumeInfoContext } from "@/app/context/ResumeInfoContext";
+import ResumePreview from "@/app/dashboard/resume/components/ResumePreview";
 import dummy from "@/app/data/dummy";
+import Header from "@/components/custom/Header";
+import { Button } from "@/components/ui/button";
+import { client } from "@/lib/contentful/client";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
-export default function EditResume({
-    params,
-}: {
-    params: { resumeid: string };
-}) {
+type Props = {};
+
+export default function ViewResume({}: Props) {
     const [resumeInfo, setResumeInfo] = useState<null | ResumeEntry>(null);
     const [resumeEntry, setResumeEntry] = useState<any | null>(null);
+
+    const { resumeId } = useParams();
+
+   
 
     useEffect(() => {
         const getData = async () => {
@@ -30,7 +28,7 @@ export default function EditResume({
 
             const entry = await environment.getEntries({
                 content_type: "resume",
-                "sys.id": params.resumeid,
+                "sys.id": resumeId,
             });
 
             setResumeEntry(entry.items[0]);
@@ -239,23 +237,31 @@ export default function EditResume({
         getData();
     }, []);
 
-    return (
-        <>
-            <ResumeInfoContext.Provider
-                value={{
-                    resumeInfo,
-                    setResumeInfo,
-                    resumeEntry,
-                    setResumeEntry,
-                }}
-            >
-                <Header />
-                <div className="grid grid-cols-1 md:grid-cols-2 p-10 gap-10">
-                    <FormSection />
+    const handleDownload = () => {
+        window.print();
+    };
 
-                    <ResumePreview />
+    return (
+        <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo, resumeEntry,setResumeEntry }}>
+            <div id="no-print">
+                <Header />
+                <div className="my-10 mx-10 md:mx-20 lg:mx-36">
+                    <h2 className="text-center text-2xl font-medium">
+                        Congrats ! Your Ultimate AI generated resume is ready !{" "}
+                    </h2>
+                    <p className="text-center text-gray-400">
+                        Now you are ready to download your resume and you can
+                        share unique resume url with your friends and family...
+                    </p>
+                    <div className="flex justify-between px-44 my-10">
+                        <Button onClick={handleDownload}>Download</Button>
+                        <Button>Share</Button>
+                    </div>
                 </div>
-            </ResumeInfoContext.Provider>
-        </>
+            </div>
+            <div id="print-area" className="my-10 mx-10 md:mx-20 lg:mx-36">
+                <ResumePreview />
+            </div>
+        </ResumeInfoContext.Provider>
     );
 }

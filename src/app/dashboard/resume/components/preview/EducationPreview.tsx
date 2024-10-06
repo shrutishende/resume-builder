@@ -17,7 +17,7 @@ export default function EducationPreview() {
             </h2>
             <hr style={{ borderColor: resumeInfo?.themeColor }} />
 
-            {resumeInfo?.education.map((education, index) => (
+            {resumeInfo?.education?.map((education, index) => (
                 <div key={index} className="my-5">
                     <h2
                         className="text-sm font-bold"

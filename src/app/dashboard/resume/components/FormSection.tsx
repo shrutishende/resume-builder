@@ -1,21 +1,33 @@
 import React, { useState } from "react";
 import PersonalDetail from "./forms/PersonalDetail";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, LayoutGrid } from "lucide-react";
+import { ArrowLeft, ArrowRight, Home, LayoutGrid } from "lucide-react";
 import Summery from "./forms/Summery";
 import Experience from "./forms/Experience";
 import Skills from "./forms/Skills";
 import Education from "./forms/Education";
+import Link from "next/link";
+import { redirect, useParams } from "next/navigation";
 
 export default function FormSection() {
     const [activeFormIndex, setActiveFormIndex] = useState(1);
     const [enableNext, setEnableNext] = useState(false);
+    const params = useParams();
+    //console.log("params", params);
     return (
         <div>
             <div className="flex justify-between items-center ">
-                <Button variant="outline" size="sm" className="flex gap-2">
-                    <LayoutGrid /> Theme
-                </Button>
+                <div className="flex gap-5 ">
+                    <Link href="/dashboard">
+                        <Button>
+                            <Home />{" "}
+                        </Button>
+                    </Link>
+
+                    <Button variant="outline" size="sm" className="flex gap-2">
+                        <LayoutGrid /> Theme
+                    </Button>
+                </div>
                 <div className="flex gap-2">
                     {activeFormIndex > 1 && (
                         <Button
@@ -50,6 +62,8 @@ export default function FormSection() {
                 <Experience enabledNext={(v: boolean) => setEnableNext(v)} />
             ) : activeFormIndex === 5 ? (
                 <Education enabledNext={(v: boolean) => setEnableNext(v)} />
+            ) : activeFormIndex === 6 ? (
+                redirect(`/my-resume/` + params.resumeid + `/view`)
             ) : null}
         </div>
     );

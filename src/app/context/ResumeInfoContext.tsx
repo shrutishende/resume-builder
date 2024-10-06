@@ -10,7 +10,7 @@ export interface ResumeEntry {
     address: string;
     phone: string;
     email: string;
-    themeColor: string;
+  // themeColor: string;
     summary: string;
     experience: Experience[];
     education: Education[];

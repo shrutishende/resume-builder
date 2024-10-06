@@ -9,18 +9,18 @@ export default function SkillsPreview() {
         ResumeInfoContext
     ) as ResumeInfoContextType;
     //    useContext(ResumeInfoContext);
-  
+    console.log("resume info", resumeInfo);
     return (
         <div className="my-6">
             <h2
                 className="text-center font-bold text-sm mb-2"
-                style={{ color: resumeInfo?.themeColor }}
+                style={{ color: "red" }}
             >
                 Skills
             </h2>
-            <hr style={{ borderColor: resumeInfo?.themeColor }} />
+            <hr style={{ borderColor: "red" }} />
             <div className="grid grid-cols-2 gap-3 my-4">
-                {resumeInfo?.skills.map((skill, index) => (
+                {resumeInfo?.skills?.map((skill, index) => (
                     <div
                         key={index}
                         className="flex items-center justify-between"
@@ -30,7 +30,7 @@ export default function SkillsPreview() {
                             <div
                                 className="h-2"
                                 style={{
-                                    backgroundColor: resumeInfo.themeColor,
+                                    backgroundColor: "gray",
                                     width: skill?.rating * 20 + "%",
                                 }}
                             ></div>

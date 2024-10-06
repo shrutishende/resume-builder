@@ -244,7 +244,7 @@ export default function Education({ enabledNext }: EducationProps) {
                     {educationList.map((item, index) => (
                         <div>
                             <div className="grid grid-cols-2 gap-3 border p-3 my-5 rounded-lg">
-                                <div>
+                                <div className="col-span-2">
                                     <label>University Name</label>
                                     <Input
                                         value={item.universityName}
@@ -291,7 +291,7 @@ export default function Education({ enabledNext }: EducationProps) {
                                     />
                                 </div>
 
-                                <div>
+                                <div className="col-span-2">
                                     <label>Description</label>
                                     <Textarea
                                         value={item.description}
