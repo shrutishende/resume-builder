@@ -10,7 +10,7 @@ import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface FormData {
-    firstName?: string;
+    firstName?: string ;
     lastName?: string;
     jobTitle?: string;
     address?: string;

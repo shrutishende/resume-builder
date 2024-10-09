@@ -14,7 +14,7 @@ export default function SkillsPreview() {
         <div className="my-6">
             <h2
                 className="text-center font-bold text-sm mb-2"
-                style={{ color: "red" }}
+                style={{ color: resumeInfo?.themeColor }}
             >
                 Skills
             </h2>
@@ -30,7 +30,7 @@ export default function SkillsPreview() {
                             <div
                                 className="h-2"
                                 style={{
-                                    backgroundColor: "gray",
+                                    backgroundColor: resumeInfo?.themeColor,
                                     width: skill?.rating * 20 + "%",
                                 }}
                             ></div>

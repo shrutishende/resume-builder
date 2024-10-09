@@ -8,6 +8,7 @@ import Skills from "./forms/Skills";
 import Education from "./forms/Education";
 import Link from "next/link";
 import { redirect, useParams } from "next/navigation";
+import ThemeColor from "./ThemeColor";
 
 export default function FormSection() {
     const [activeFormIndex, setActiveFormIndex] = useState(1);
@@ -24,9 +25,7 @@ export default function FormSection() {
                         </Button>
                     </Link>
 
-                    <Button variant="outline" size="sm" className="flex gap-2">
-                        <LayoutGrid /> Theme
-                    </Button>
+                    <ThemeColor />
                 </div>
                 <div className="flex gap-2">
                     {activeFormIndex > 1 && (

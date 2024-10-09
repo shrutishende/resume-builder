@@ -4,13 +4,13 @@ import { useContext } from "react";
 
 // @todo rename it to ResumeInfo
 export interface ResumeEntry {
-    firstName: string;
+    firstName: string ;
     lastName: string;
     jobTitle: string;
     address: string;
     phone: string;
     email: string;
-  // themeColor: string;
+    themeColor: string;
     summary: string;
     experience: Experience[];
     education: Education[];

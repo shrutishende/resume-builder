@@ -48,6 +48,8 @@ export default function Dashboard() {
         <p>Loading</p>;
     }
 
+ //  console.log("resume list", resumeList);
+
     return (
         <>
             <Header />
@@ -62,7 +64,11 @@ export default function Dashboard() {
                     ) : (
                         resumeList.length > 0 &&
                         resumeList.map((resume, index) => (
-                            <ResumeCardItem resume={resume} key={index} />
+                            <ResumeCardItem
+                                resume={resume}
+                                key={index}
+                               // resumeList= {resumeList}
+                            />
                         ))
                     )}
                 </div>
